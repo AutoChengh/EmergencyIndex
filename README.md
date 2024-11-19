@@ -1,7 +1,7 @@
 # Emergency Index (EI): A two-dimensional surrogate safety measure considering vehicles' interaction depth
 Surrogate safety measures (SSMs) such as Time-to-Collision (TTC) are classic metrics that align with people's intuitive understanding of safety and have now become essential standards for assessing autonomous vehicles' safety.
 - However, are there moments when you're unsure how to calculate TTC? For instance, during merging events or multi-angle conflict scenarios at complex intersections?
-- Do you ever feel that the TTC calculation logic may be too simplistic for safety assessment? For example, in the situations shown in the figure, is the risk truly the same?
+- Do you ever feel that the TTC calculation logic may be too simplistic for safety assessment? For example, in the situations shown in the Figure 1, is the risk truly the same?
 
 <p align="center">
   <img src="The_shortcoming_of_TTC.png" alt="animated" width="55%" height="55%"/>
