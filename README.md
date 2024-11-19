@@ -27,6 +27,6 @@ Compared to previous indicators, we have considered a new dimension. EI utilizes
 - `Vehicle Number`      : The unique ID assigned to each vehicle.
 
 ## Output 
-- `TDM (s)`      :    The timestamp indicating the time of each sample. (In this case, the sampling frequency of the CSV file is 100 Hz, resulting in a time interval of 0.01 seconds between frames.)
-- `MFD (m)`      :   The x-coordinate of the vehicle's centroid position.
-- `EI (m/s)`     :  The y-coordinate of the vehicle's centroid position.
+- `TDM (s)`      :    Time-to-Depth-Maximum (TDM), a component of EI, indicating the remaining time available for evasive actions.
+- `MFD (m)`      :   Interaction Depth (InDepth), a component of EI, defined as the maximum depth of intrusion into each other's safety region. It represents the required adjustments to pre-collision states.
+- `EI (m/s)`     :  Emergency Index (EI), representing the intensity of evasive action needed for two vehicles to avoid risk. It reflects the required rate of state adjustments in evasive maneuvers. Physically, EI indicates the rate at which InDepth must change to ensure successful evasive actions.
