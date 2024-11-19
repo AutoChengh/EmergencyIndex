@@ -15,3 +15,18 @@ Compared to previous indicators, we have considered a new dimension. EI utilizes
 <p align="center">
   <img src="EI_framework.png" alt="animated" width="90%" height="90%"/>
 </p>
+
+## Input 
+- `Time (s)`      :    The timestamp. (In this case, the sampling frequency of the CSV file is 100 Hz.)
+- `Position X (m)`      :   The x-coordinate of the vehicle's centroid position.
+- `Position Y (m)`     :  The y-coordinate of the vehicle's centroid position.
+- `Velocity (m/s)`     :  The speed of the vehicle in meters per second.
+- `Heading`     :  The heading angle of the vehicle, represented as an angle in radians, ranging from -3.14 to 3.14.
+- `Length (m)` :  The length of the vehicle in meters.
+- `Width (m)`  :  The width of the vehicle in meters.
+- `Vehicle Number`      : The unique ID assigned to each vehicle.
+
+## Output 
+- `TDM (s)`      :    The timestamp indicating the time of each sample. (In this case, the sampling frequency of the CSV file is 100 Hz, resulting in a time interval of 0.01 seconds between frames.)
+- `MFD (m)`      :   The x-coordinate of the vehicle's centroid position.
+- `EI (m/s)`     :  The y-coordinate of the vehicle's centroid position.
