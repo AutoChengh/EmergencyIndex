@@ -4,7 +4,7 @@ Surrogate safety measures (SSMs) such as Time-to-Collision (TTC) are classic met
 - Do you ever feel that the TTC calculation logic may be too simplistic for safety assessment? For example, in the situations shown in the figure, is the risk truly the same?
 
 <p align="center">
-  <img src="github_fig_1.png" alt="animated" width="60%" height="60%"/>
+  <img src="The shortcoming of TTC.png" alt="animated" width="60%" height="60%"/>
 </p>
 
 
