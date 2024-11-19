@@ -7,9 +7,6 @@ Surrogate safety measures (SSMs) such as Time-to-Collision (TTC) are classic met
   <img src="github_fig_1.png" alt="animated" width="60%" height="60%"/>
 </p>
 
-<div style="text-align: center;">   <img style="border: 3px solid gray; width: 60%;" src="./github_fig_1.png"/> </div>
-
-
 
 Don't worry! We will provide you with a new SSM—Emergency Index (EI), which is applicable to various forms of conflicts in a 2D plane. It can assess more granular levels of risk and, like TTC, has an intuitive physical meaning.
 
