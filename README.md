@@ -1,7 +1,7 @@
 # Emergency Index (EI): A two-dimensional surrogate safety measure considering vehicle interaction depth
 Surrogate safety measures (SSMs) such as Time-to-Collision (TTC) are classic metrics that align with people's intuitive understanding of safety and have now become essential standards for assessing autonomous vehicle's safety.
 - However, are there moments when you're unsure how to calculate TTC? For instance, during merging events or multi-angle conflict scenarios at complex intersections?
-- Do you ever feel that the TTC calculation logic may be too simplistic for safety assessment? For example, in the situations shown in the figure, is the risk truly the same? 
+- Do you ever feel that the TTC calculation logic may be too simplistic for safety assessment? For example, in the situations shown in the figure[here](The shortcoming of TTC.pdf), is the risk truly the same? 
 
 Don't worry! We will provide you with a new SSM—Emergency Index (EI), which is applicable to various forms of conflicts in a 2D plane. It can assess more granular levels of risk and, like TTC, has an intuitive physical meaning.
 
