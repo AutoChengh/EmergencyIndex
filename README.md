@@ -6,7 +6,7 @@ Surrogate safety measures (SSMs) such as Time-to-Collision (TTC) are classic met
 <p align="center">
   <img src="The_shortcoming_of_TTC.png" alt="animated" width="55%" height="55%"/>
 </p>
-
+<p align="center"><em>Figure 1: TTC-based indicators can measure the intensity of collision avoidance along the current closure direction. However, in 2D scenarios, evasive maneuvers are not limited to actions along the current closure direction. Evasive actions may involve various possibilities, such as lateral or combined maneuvers, which TTC-based indicators struggle to quantify effectively</em></p>
 
 Don't worry! We will provide you with a new SSM—Emergency Index (EI), which is applicable to various forms of conflicts in a 2D plane. It can assess more granular levels of risk and, like TTC, has an intuitive physical meaning.
 
@@ -15,6 +15,7 @@ Compared to previous indicators, we have considered a new dimension. EI utilizes
 <p align="center">
   <img src="EI_framework.png" alt="animated" width="90%" height="90%"/>
 </p>
+<p align="center"><em>Figure 2: The framework of EI</em></p>
 
 ## Input 
 - `Time (s)`      :    The timestamp. (In this case, the sampling frequency of the CSV file is 100 Hz.)
