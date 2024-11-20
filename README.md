@@ -4,7 +4,7 @@ Surrogate safety measures (SSMs) such as Time-to-Collision (TTC) are classic met
 - Do you ever feel that the TTC calculation logic may be too simplistic for safety assessment? For example, in the situations shown in the Figure 1, is the risk truly the same?
 
 <p align="center">
-  <img src="The_shortcoming_of_TTC.png" alt="animated" width="55%" height="55%"/>
+  <img src="The_shortcoming_of_TTC.png" alt="animated" width="65%" height="65%"/>
 </p>
 <p align="center"><em>Figure 1: TTC-based indicators can measure the intensity of collision avoidance along the current closure direction. However, in 2D scenarios, evasive maneuvers are not limited to actions along the current closure direction. Evasive actions may involve various possibilities, such as lateral or combined maneuvers, which TTC-based indicators struggle to quantify effectively</em></p>
 
@@ -13,7 +13,7 @@ Don't worry! We will provide you with a new SSM—Emergency Index (EI), which is
 Compared to previous indicators, we have considered a new dimension. EI utilizes the concept of Interaction Depth (InDepth), defined as the maximum depth at which two vehicles are projected to intrude into each other's safety region, representing the necessary adjustments for pre-collision states. The physical significance of EI lies in the rate of change in InDepth required for evasive actions, offering unique insights into crash avoidance strategies. Additionally, we propose a conflict detection model to comprehensively screen potential conflict vehicles.
 
 <p align="center">
-  <img src="EI_framework.png" alt="animated" width="90%" height="90%"/>
+  <img src="EI_framework.png" alt="animated" width="95%" height="95%"/>
 </p>
 <p align="center"><em>Figure 2: The framework of EI</em></p>
 
