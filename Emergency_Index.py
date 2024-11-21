@@ -117,10 +117,7 @@ def compute_MFD(D_t1, d_A, d_B):
 def main(file_path, output_file, D_0, π, γ, D_safe):
     df = pd.read_csv(file_path)
 
-    df['P1_Veh_ID'] = ''
-    df['P2_Veh_ID'] = ''
     df['Q_Veh_ID'] = ''
-
     df['TDM (s)'] = ''
     df['InDepth (m)'] = ''
     df['EI (m/s)'] = ''
@@ -134,16 +131,12 @@ def main(file_path, output_file, D_0, π, γ, D_safe):
         P11_indices = []
         P12_potential_indices = []
         P12_indices = []
-        P1_vehicle_ids = []
-
         P2_indices = []
-        P2_vehicle_ids = []
 
         Q_vehicle_ids = []
 
         for j, same_time_row in same_time_rows.iterrows():
             x_B, y_B, v_B, h_B, l_B, w_B = same_time_row.iloc[1:7]
-            vehicle_id_B = same_time_row['Vehicle ID']
 
             delta_x = x_B - x_A
             delta_y = y_B - y_A
@@ -158,7 +151,6 @@ def main(file_path, output_file, D_0, π, γ, D_safe):
             v_B_r = round(v_B_r, 2)
             if v_B_r > 0:
                 P2_indices.append(j)
-                P2_vehicle_ids.append(vehicle_id_B)
 
             D = np.sqrt(delta_x ** 2 + delta_y ** 2)
 
@@ -169,8 +161,6 @@ def main(file_path, output_file, D_0, π, γ, D_safe):
                 P12_potential_indices.append(j)
             elif condition1:
                 P11_potential_indices.append(j)
-
-        df.at[i, 'P2_Veh_ID'] = ';'.join(map(str, P2_vehicle_ids))
 
         for j in P11_potential_indices:
             same_time_row = df.iloc[j]
@@ -201,10 +191,6 @@ def main(file_path, output_file, D_0, π, γ, D_safe):
                 P12_indices.append(j)
 
         P1_indices = list(set(P11_indices) | set(P12_indices))
-        for j in P1_indices:
-            vehicle_id_B = df.iloc[j]['Vehicle ID']
-            P1_vehicle_ids.append(vehicle_id_B)
-        df.at[i, 'P1_Veh_ID'] = ';'.join(map(str, P1_vehicle_ids))
 
         Q_indices = list(set(P2_indices) & set(P1_indices))
         for j in Q_indices:
