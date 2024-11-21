@@ -17,6 +17,9 @@ Compared to previous indicators, we have considered a new dimension. EI utilizes
 </p>
 <p align="center"><em>Figure 2: The framework of EI</em></p>
 
+## Libarary requirements
+Any versions of `pandas` and `numpy`.
+
 ## Input 
 - `Time (s)`      :    The timestamp. (In this case, the sampling frequency of the CSV file is 100 Hz.)
 - `Position X (m)`      :   The x-coordinate of the vehicle's centroid position.
