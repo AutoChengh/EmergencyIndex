@@ -28,7 +28,7 @@ Any versions of `pandas` and `numpy`.
 - `Heading`     :  The heading angle of the vehicle, represented as an angle in radians, ranging from -3.14 to 3.14.
 - `Length (m)` :  The length of the vehicle in meters.
 - `Width (m)`  :  The width of the vehicle in meters.
-- `Vehicle Number`      : The unique ID assigned to each vehicle.
+- `Vehicle ID`      : The unique ID assigned to each vehicle.
 
 ## Output 
 - `TDM (s)`      :    Time-to-Depth-Maximum (TDM), a component of EI, indicating the remaining time available for evasive actions.
