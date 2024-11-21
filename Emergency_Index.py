@@ -1,19 +1,7 @@
 import pandas as pd
 import numpy as np
 
-file_path = "Case1_angle_conflict_raw_input.csv"
-df = pd.read_csv(file_path)
-
-df['TDM (s)'] = ''
-df['InDepth (m)'] = ''
-df['EI (m/s)'] = ''
-
-D_0 = 100  # The distance range of interest
-π = 3.14159
-γ = 0.01396  # If the angle difference between two vehicles is less than γ, it is considered a parallel situation (used in Condition P1)
-D_safe = 0  # D_safe is temporarily set to 0
-
-def compute_Pc(x_A, y_A, x_B, y_B, h_A, h_B, w_A, w_B):
+def compute_Pc(x_A, y_A, x_B, y_B, h_A, h_B):
     delta_x = x_B - x_A
     delta_y = y_B - y_A
     sin_diff = np.sin(h_B - h_A)
@@ -126,110 +114,139 @@ def compute_d_B(x_B, y_B, h_B, l_B, w_B, theta_B_prime):
 def compute_MFD(D_t1, d_A, d_B):
     return D_t1 - (d_A + d_B)
 
-# Iterate over each row for calculation
-for i, row in df.iterrows():
+def main(file_path, output_file, D_0, π, γ, D_safe):
+    df = pd.read_csv(file_path)
 
-    x_A,y_A,v_A,h_A,l_A,w_A = row.iloc[1], row.iloc[2], row.iloc[3], row.iloc[4], row.iloc[5], row.iloc[6]
+    df['P1_Veh_ID'] = ''
+    df['P2_Veh_ID'] = ''
+    df['Q_Veh_ID'] = ''
 
-    same_time_rows = df[(df[df.columns[0]] == row.iloc[0]) & (df.index != i)]
+    df['TDM (s)'] = ''
+    df['InDepth (m)'] = ''
+    df['EI (m/s)'] = ''
 
-    same_time_indices = same_time_rows.index.tolist()
-    P2_indices = []
-    distances = []
-    P12_potential_indices = []
-    P11_potential_indices = []
+    # Iterate over each row for calculation
+    for i, row in df.iterrows():
+        x_A, y_A, v_A, h_A, l_A, w_A = row.iloc[1:7]
+        same_time_rows = df[(df[df.columns[0]] == row.iloc[0]) & (df.index != i)]
 
-    for j, same_time_row in same_time_rows.iterrows():
+        P11_potential_indices = []
+        P11_indices = []
+        P12_potential_indices = []
+        P12_indices = []
+        P1_vehicle_ids = []
 
-        x_B,y_B,v_B,h_B,l_B,w_B = same_time_row.iloc[1],same_time_row.iloc[2],same_time_row.iloc[3],same_time_row.iloc[4],same_time_row.iloc[5],same_time_row.iloc[6]
+        P2_indices = []
+        P2_vehicle_ids = []
 
-        delta_x = x_B - x_A
-        delta_y = y_B - y_A
-        norm_delta = np.sqrt(delta_x ** 2 + delta_y ** 2)
+        Q_vehicle_ids = []
 
-        if norm_delta != 0:
-            unit_vector = np.array([delta_x / norm_delta, delta_y / norm_delta])
-            velocity_diff = np.array([v_B * np.cos(h_B) - v_A * np.cos(h_A), v_B * np.sin(h_B) - v_A * np.sin(h_A)])
-            v_B_r = -np.dot(unit_vector, velocity_diff)
-        else:
-            v_B_r = 0
+        for j, same_time_row in same_time_rows.iterrows():
+            x_B, y_B, v_B, h_B, l_B, w_B = same_time_row.iloc[1:7]
+            vehicle_id_B = same_time_row['Vehicle ID']
 
-        v_B_r = round(v_B_r, 2)
-        if v_B_r > 0:
-            P2_indices.append(j)
+            delta_x = x_B - x_A
+            delta_y = y_B - y_A
+            norm_delta = np.sqrt(delta_x ** 2 + delta_y ** 2)
+            if norm_delta != 0:
+                unit_vector = np.array([delta_x / norm_delta, delta_y / norm_delta])
+                velocity_diff = np.array([v_B * np.cos(h_B) - v_A * np.cos(h_A), v_B * np.sin(h_B) - v_A * np.sin(h_A)])
+                v_B_r = -np.dot(unit_vector, velocity_diff)
+            else:
+                v_B_r = 0
 
-        D = np.sqrt(delta_x ** 2 + delta_y ** 2)
-        distances.append(round(D, 2))
+            v_B_r = round(v_B_r, 2)
+            if v_B_r > 0:
+                P2_indices.append(j)
+                P2_vehicle_ids.append(vehicle_id_B)
 
-        condition1 = D < D_0
-        condition2 = (abs(h_B - h_A) <= γ) or (abs(h_B - h_A + π) <= γ) or (abs(h_B - h_A - π) <= γ) or (abs(abs(h_B - h_A) - π) <= γ)
+            D = np.sqrt(delta_x ** 2 + delta_y ** 2)
 
-        if condition1 and condition2:
-            P12_potential_indices.append(j)
-        elif condition1:
-            P11_potential_indices.append(j)
+            condition1 = D < D_0
+            condition2 = (abs(h_B - h_A) <= γ) or (abs(h_B - h_A + π) <= γ) or (abs(h_B - h_A - π) <= γ) or (abs(abs(h_B - h_A) - π) <= γ)
 
-    # Process new P11 lines
-    P11_indices = []
-    for j in P11_potential_indices:
-        same_time_row = df.iloc[j]
-        x_B,y_B,v_B,h_B,l_B,w_B = same_time_row.iloc[1],same_time_row.iloc[2],same_time_row.iloc[3],same_time_row.iloc[4],same_time_row.iloc[5],same_time_row.iloc[6]
+            if condition1 and condition2:
+                P12_potential_indices.append(j)
+            elif condition1:
+                P11_potential_indices.append(j)
 
-        Pc = compute_Pc(x_A, y_A, x_B, y_B, h_A, h_B, w_A, w_B)
-        dac = compute_dac(w_A, h_A, h_B)
-        dbc = compute_dbc(w_B, h_A, h_B)
+        df.at[i, 'P2_Veh_ID'] = ';'.join(map(str, P2_vehicle_ids))
 
-        condition_i = any(np.dot([np.cos(h_A), np.sin(h_A)], compute_A_bcC_i(Pc, dac, dbc, h_A, h_B, x_A, y_A, l_A, i)) > 0 for i in range(1, 5))
-        condition_j = any(np.dot([np.cos(h_B), np.sin(h_B)], compute_B_bcC_j(Pc, dac, dbc, h_A, h_B, x_B, y_B, l_B, j)) > 0 for j in range(1, 5))
+        for j in P11_potential_indices:
+            same_time_row = df.iloc[j]
+            x_B, y_B, v_B, h_B, l_B, w_B = same_time_row.iloc[1:7]
 
-        if condition_i and condition_j:
-            P11_indices.append(j)
+            Pc = compute_Pc(x_A, y_A, x_B, y_B, h_A, h_B)
+            dac = compute_dac(w_A, h_A, h_B)
+            dbc = compute_dbc(w_B, h_A, h_B)
 
-    P12_indices = []
-    for j in P12_potential_indices:
-        same_time_row = df.iloc[j]
+            condition_i = any(np.dot([np.cos(h_A), np.sin(h_A)], compute_A_bcC_i(Pc, dac, dbc, h_A, h_B, x_A, y_A, l_A, i)) > 0 for i in range(1, 5))
+            condition_j = any(np.dot([np.cos(h_B), np.sin(h_B)], compute_B_bcC_j(Pc, dac, dbc, h_A, h_B, x_B, y_B, l_B, j)) > 0 for j in range(1, 5))
 
-        x_B,y_B,v_B,h_B,l_B,w_B = same_time_row.iloc[1],same_time_row.iloc[2],same_time_row.iloc[3],same_time_row.iloc[4],same_time_row.iloc[5],same_time_row.iloc[6]
+            if condition_i and condition_j:
+                P11_indices.append(j)
 
-        delta_x = x_B - x_A
-        delta_y = y_B - y_A
+        for j in P12_potential_indices:
+            same_time_row = df.iloc[j]
 
-        P_1221 = np.dot([delta_x, delta_y], [np.cos(h_A), np.sin(h_A)])
-        P_1222 = np.dot([-delta_x, -delta_y], [np.cos(h_B), np.sin(h_B)])
-        P_1223 = np.abs(delta_x * np.cos(h_A) + delta_y * (-np.sin(h_A))) - (l_A + l_B) / 2
-        P_123 = np.abs(delta_x * np.sin(h_A) - delta_y * np.cos(h_A)) - (w_A + w_B) / 2
-        if (P_1221 >= 0 or P_1222 >= 0 or P_1223 <= 0) and P_123 <= 0:
-            P12_indices.append(j)
+            x_B, y_B, v_B, h_B, l_B, w_B = same_time_row.iloc[1:7]
+            delta_x = x_B - x_A
+            delta_y = y_B - y_A
 
-    Q_potential_indices = list(set(P2_indices) & (set(P11_indices) | set(P12_indices)))
+            P_1221 = np.dot([delta_x, delta_y], [np.cos(h_A), np.sin(h_A)])
+            P_1222 = np.dot([-delta_x, -delta_y], [np.cos(h_B), np.sin(h_B)])
+            P_1223 = np.abs(delta_x * np.cos(h_A) + delta_y * (-np.sin(h_A))) - (l_A + l_B) / 2
+            P_123 = np.abs(delta_x * np.sin(h_A) - delta_y * np.cos(h_A)) - (w_A + w_B) / 2
+            if (P_1221 >= 0 or P_1222 >= 0 or P_1223 <= 0) and P_123 <= 0:
+                P12_indices.append(j)
 
-    TDM_values = []
-    InDepth_values = []
-    EI_values = []
+        P1_indices = list(set(P11_indices) | set(P12_indices))
+        for j in P1_indices:
+            vehicle_id_B = df.iloc[j]['Vehicle ID']
+            P1_vehicle_ids.append(vehicle_id_B)
+        df.at[i, 'P1_Veh_ID'] = ';'.join(map(str, P1_vehicle_ids))
 
-    for j in Q_potential_indices:
-        same_time_row = df.iloc[j]
-        x_B,y_B,v_B,h_B,l_B,w_B = same_time_row.iloc[1],same_time_row.iloc[2],same_time_row.iloc[3],same_time_row.iloc[4],same_time_row.iloc[5],same_time_row.iloc[6]
-        theta_B_prime = compute_theta_B_prime(v_A, h_A, v_B, h_B)
-        D_t1 = compute_D_t1(x_A, y_A, x_B, y_B, theta_B_prime)
-        TDM, D_B_prime, v_B_prime_norm = compute_TDM(x_A, y_A, x_B, y_B, theta_B_prime, v_A, h_A, v_B, h_B)
-        d_A = compute_d_A(x_A, y_A, h_A, l_A, w_A, theta_B_prime)
-        d_B = compute_d_B(x_B, y_B, h_B, l_B, w_B, theta_B_prime)
+        Q_indices = list(set(P2_indices) & set(P1_indices))
+        for j in Q_indices:
+            vehicle_id_B = df.iloc[j]['Vehicle ID']
+            Q_vehicle_ids.append(vehicle_id_B)
+        df.at[i, 'Q_Veh_ID'] = ';'.join(map(str, Q_vehicle_ids))
 
-        MFD = compute_MFD(D_t1, d_A, d_B)
-        InDepth = D_safe - MFD
-        EI = InDepth/TDM
+        TDM_values = []
+        InDepth_values = []
+        EI_values = []
 
-        if 0 < TDM < 5 and InDepth > -5 and EI > -10:
-            TDM_values.append(round(TDM, 2))
-            InDepth_values.append(round(InDepth, 2))
-            EI_values.append(round(EI, 2))
+        for j in Q_indices:
+            same_time_row = df.iloc[j]
+            x_B, y_B, v_B, h_B, l_B, w_B = same_time_row.iloc[1:7]
+            theta_B_prime = compute_theta_B_prime(v_A, h_A, v_B, h_B)
+            D_t1 = compute_D_t1(x_A, y_A, x_B, y_B, theta_B_prime)
+            TDM, D_B_prime, v_B_prime_norm = compute_TDM(x_A, y_A, x_B, y_B, theta_B_prime, v_A, h_A, v_B, h_B)
+            d_A = compute_d_A(x_A, y_A, h_A, l_A, w_A, theta_B_prime)
+            d_B = compute_d_B(x_B, y_B, h_B, l_B, w_B, theta_B_prime)
 
-    df.at[i, 'TDM (s)'] = ','.join(map(str, TDM_values))
-    df.at[i, 'InDepth (m)'] = ','.join(map(str, InDepth_values))
-    df.at[i, 'EI (m/s)'] = ','.join(map(str, EI_values))
+            MFD = compute_MFD(D_t1, d_A, d_B)
+            InDepth = D_safe - MFD
+            EI = InDepth / TDM
 
-output_file = "Case1_angle_conflict_EI_calculated.csv"
-df.to_csv(output_file, index=False)
+            if 0 < TDM < 5 and InDepth > -5 and EI > -10:
+                TDM_values.append(round(TDM, 2))
+                InDepth_values.append(round(InDepth, 2))
+                EI_values.append(round(EI, 2))
 
-print(f"finish：{output_file}")
+        df.at[i, 'TDM (s)'] = ','.join(map(str, TDM_values))
+        df.at[i, 'InDepth (m)'] = ','.join(map(str, InDepth_values))
+        df.at[i, 'EI (m/s)'] = ','.join(map(str, EI_values))
+
+    df.to_csv(output_file, index=False)
+    print(f"finish：{output_file}")
+
+
+if __name__ == "__main__":
+    file_path = "data/Case1_angle_conflict_raw_input.csv"
+    output_file = "data/Case1_angle_conflict_EI_output.csv"
+    D_0 = 100  # The distance range of interest
+    π = 3.14159
+    γ = 0.01396  # If the angle difference between two vehicles is less than γ, it is considered a parallel situation (used in Condition P1)
+    D_safe = 0  # D_safe is temporarily set to 0
+    main(file_path, output_file, D_0, π, γ, D_safe)
