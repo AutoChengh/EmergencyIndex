@@ -17,20 +17,85 @@ Compared to previous indicators, we have considered a new dimension. EI utilizes
 </p>
 <p align="center"><em>Figure 2: The framework of EI</em></p>
 
-## Libarary requirements
-Any versions of `pandas` and `numpy`.
 
-## Input 
-- `Time (s)`      :    The timestamp. (In this case, the sampling frequency of the CSV file is 100 Hz.)
-- `Position X (m)`      :   The x-coordinate of the vehicle's centroid position.
-- `Position Y (m)`     :  The y-coordinate of the vehicle's centroid position.
-- `Velocity (m/s)`     :  The speed of the vehicle in meters per second.
-- `Heading`     :  The heading angle of the vehicle, represented as an angle in radians, ranging from -3.14 to 3.14.
-- `Length (m)` :  The length of the vehicle in meters.
-- `Width (m)`  :  The width of the vehicle in meters.
-- `Vehicle ID`      : The unique ID assigned to each vehicle.
+## Features
+- **Identify Conflicting Vehicles**: For each vehicle and timestamp, the tool identifies nearby vehicles with potential conflicts.
+- **Compute Safety Metrics**: Calculates TDM, InDepth, and EI for each conflicting vehicle pair.
+- **Comprehensive Outputs**: Generates a CSV file containing the original data and four new columns:
+  - `Q_Veh_ID`: IDs of vehicles in potential conflict.
+  - `TDM (s)`: Time-to-Depth-Maximum, indicating remaining time for evasive actions.
+  - `InDepth (m)`: Maximum depth of intrusion into each other's safety region.
+  - `EI (m/s)`: Emergency Index, representing the intensity of evasive actions required.
 
-## Output 
-- `TDM (s)`      :    Time-to-Depth-Maximum (TDM), a component of EI, indicating the remaining time available for evasive actions.
-- `InDepth (m)`      :   Interaction Depth (InDepth), a component of EI, defined as the maximum depth of intrusion into each other's safety region. It represents the required adjustments to pre-collision states.
-- `EI (m/s)`     :  Emergency Index (EI), representing the intensity of evasive action needed for two vehicles to avoid risk. It reflects the required rate of state adjustments in evasive maneuvers. Physically, EI indicates the rate at which InDepth must change to ensure successful evasive actions.
+## Input Data Format
+The script requires a CSV file where each row corresponds to a vehicle's state at a specific timestamp. The following columns are expected:
+
+| **Column Name**   | **Description**                                                                 |
+|--------------------|---------------------------------------------------------------------------------|
+| **Time (s)**       | Timestamp (100 Hz sampling rate in the example data).                          |
+| **Position X (m)** | X-coordinate of the vehicle's centroid position.                               |
+| **Position Y (m)** | Y-coordinate of the vehicle's centroid position.                               |
+| **Velocity (m/s)** | Speed of the vehicle in meters per second.                                     |
+| **Heading**        | Heading angle of the vehicle in radians (-3.14 to 3.14).                       |
+| **Length (m)**     | Length of the vehicle in meters.                                               |
+| **Width (m)**      | Width of the vehicle in meters.                                                |
+| **Vehicle ID**     | Unique ID for each vehicle.                                                    |
+
+### Example Input File
+The input file should follow the structure below:
+
+| Time (s) | Position X (m) | Position Y (m) | Velocity (m/s) | Heading | Length (m) | Width (m) | Vehicle ID |
+|----------|----------------|----------------|----------------|---------|------------|-----------|------------|
+| 0.0      | 5.0            | 10.0           | 12.0           | 0.785   | 4.5        | 1.8       | 1          |
+| 0.0      | 15.0           | 20.0           | 10.0           | 1.570   | 4.5        | 1.8       | 2          |
+
+## Output Data Format
+The processed file will retain the original columns and append the following four new columns:
+
+| **Column Name**    | **Description**                                                                 |
+|---------------------|---------------------------------------------------------------------------------|
+| **Q_Veh_ID**        | IDs of vehicles in potential conflict with the subject vehicle.                |
+| **TDM (s)**         | Time-to-Depth-Maximum, indicating remaining time for evasive actions.          |
+| **InDepth (m)**     | Maximum depth of intrusion into each other's safety region.                    |
+| **EI (m/s)**        | Emergency Index, representing the intensity of evasive actions required.       |
+
+### Example Output File
+| Time (s) | Position X (m) | ... | Q_Veh_ID | TDM (s)  | InDepth (m) | EI (m/s)  |
+|----------|----------------|-----|----------|----------|-------------|-----------|
+| 0.0      | 5.0            | ... | 2        | 1.2      | 0.3         | 1.5       |
+| 0.0      | 15.0           | ... |          |          |             |           |
+
+## Library Requirements
+This script requires the following Python libraries:
+- `pandas`
+- `numpy`
+
+Any version of these libraries should work.
+
+## Usage
+### 1. Prepare Your Environment
+Install the required libraries using:
+```bash
+pip install pandas numpy
+```
+### 2. Prepare Your Environment
+Prepare a CSV file containing vehicle data as described in the Input Data Format section. Save the file in the data folder, or adjust the script's file path as needed.
+
+### 3. Run the Script
+Run the script using the following command:
+```bash
+python Emergency_Index.py
+```
+### 4. Adjust Parameters (Optional)
+You can modify the following parameters in the `main()` function:
+  - `D_0`: Distance range of interest (default: 100)
+  - `D_safe`:  Safe distance threshold (default: 0)
+
+### 5. Check the Results
+The processed file will be saved in the data folder (or the specified output path). The new file will include the calculated Q_Veh_ID, TDM (s), InDepth (m), and EI (m/s) columns.
+
+## License
+This project is licensed under the MIT License. Feel free to use and modify the code.
+
+## Author
+Developed by Hao Cheng. For questions or feedback, feel free to contact me at chengh22@mails.tsinghua.edu.cn.
