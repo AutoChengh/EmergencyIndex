@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import argparse
 
 def compute_Pc(x_A, y_A, x_B, y_B, h_A, h_B):
     delta_x = x_B - x_A
@@ -114,7 +115,7 @@ def compute_d_B(x_B, y_B, h_B, l_B, w_B, theta_B_prime):
 def compute_MFD(D_t1, d_A, d_B):
     return D_t1 - (d_A + d_B)
 
-def main(file_path, output_file, D_0, π, γ, D_safe):
+def main(file_path, output_file, D_0, π, gamma, D_safe):
     df = pd.read_csv(file_path)
 
     df['Q_Veh_ID'] = ''
@@ -155,7 +156,7 @@ def main(file_path, output_file, D_0, π, γ, D_safe):
             D = np.sqrt(delta_x ** 2 + delta_y ** 2)
 
             condition1 = D < D_0
-            condition2 = (abs(h_B - h_A) <= γ) or (abs(h_B - h_A + π) <= γ) or (abs(h_B - h_A - π) <= γ) or (abs(abs(h_B - h_A) - π) <= γ)
+            condition2 = (abs(h_B - h_A) <= gamma) or (abs(h_B - h_A + π) <= gamma) or (abs(h_B - h_A - π) <= gamma) or (abs(abs(h_B - h_A) - π) <= gamma)
 
             if condition1 and condition2:
                 P12_potential_indices.append(j)
@@ -225,14 +226,17 @@ def main(file_path, output_file, D_0, π, γ, D_safe):
         df.at[i, 'EI (m/s)'] = ','.join(map(str, EI_values))
 
     df.to_csv(output_file, index=False)
-    print(f"finish：{output_file}")
+    print(f"finish: {output_file}")
 
 
 if __name__ == "__main__":
-    file_path = "data/Case1_angle_conflict_raw_input.csv"
-    output_file = "data/Case1_angle_conflict_EI_output.csv"
-    D_0 = 100  # The distance range of interest
-    π = 3.14159
-    γ = 0.01396  # If the angle difference between two vehicles is less than γ, it is considered a parallel situation (used in Condition P1)
-    D_safe = 0  # D_safe is temporarily set to 0
-    main(file_path, output_file, D_0, π, γ, D_safe)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--file_path', default='data/Case1_angle_conflict_raw_input.csv')
+    parser.add_argument('--output_file', default='data/Case1_angle_conflict_EI_output.csv')
+    parser.add_argument('--D_0', default=100, help='The distance range of interest')
+    parser.add_argument('--π', default=3.14159)
+    parser.add_argument('--gamma', default=0.01396, help='If the angle difference between two vehicles is less than gamma, it is considered a parallel situation (used in Condition P1)')
+    parser.add_argument('--D_safe', default=0, help='D_safe is temporarily set to 0')
+    args = parser.parse_args()
+
+    main(args.file_path, args.output_file, args.D_0, args.π, args.gamma, args.D_safe)

@@ -8,7 +8,7 @@ Surrogate safety measures (SSMs) such as Time-to-Collision (TTC) are classic met
 </p>
 <p align="center"><em>Figure 1: TTC-based indicators can measure the intensity of collision avoidance along the current closure direction. However, in 2D scenarios, evasive maneuvers are not limited to actions along the current closure direction. Evasive actions may involve various possibilities, such as lateral or combined maneuvers, which TTC-based indicators struggle to quantify effectively</em></p>
 
-Don't worry! We will provide you with a new SSM—Emergency Index (EI), which is applicable to various forms of conflicts in a 2D plane. It can assess more granular levels of risk and, like TTC, has an intuitive physical meaning.
+Don't worry! We will provide you with a new SSM—**Emergency Index (EI)**, which is applicable to various forms of conflicts in a 2D plane. It can assess more granular levels of risk and, like TTC, has an intuitive physical meaning.
 
 Compared to previous indicators, we have considered a new dimension. EI utilizes the concept of Interaction Depth (InDepth), defined as the maximum depth at which two vehicles are projected to intrude into each other's safety region, representing the necessary adjustments for pre-collision states. The physical significance of EI lies in the rate of change in InDepth required for evasive actions, offering unique insights into crash avoidance strategies. Additionally, we propose a conflict detection model to comprehensively screen potential conflict vehicles.
 
@@ -74,12 +74,23 @@ Any version of these libraries should work.
 
 ## Usage
 ### 1. Prepare Your Environment
-Install the required libraries using:
+
+Step 1: Set up conda environment
+
 ```bash
-pip install pandas numpy
+# Create conda env
+conda create -n EI python=3.10 pandas numpy -y
+conda activate EI
 ```
+Step: 2 Clone this git repo in an appropriate folder
+
+```bash
+git clone git@github.com:AutoChengh/EmergencyIndex.git
+```
+
 ### 2. Prepare Your Environment
-Prepare a CSV file containing vehicle data as described in the Input Data Format section. Save the file in the data folder, or adjust the script's file path as needed.
+
+Prepare **CSV files** containing vehicle data as described in the Input Data Format section. Save the file in the [data folder](data/), or adjust the script's file path as needed.
 
 ### 3. Run the Script
 Run the script using the following command:
@@ -87,15 +98,17 @@ Run the script using the following command:
 python Emergency_Index.py
 ```
 ### 4. Adjust Parameters (Optional)
-You can modify the following parameters in the `main()` function:
+You can modify the following parameters in the command:
+
+```bash
+python Emergency_Index.py --D_0 'Your value' --D_safe 'Your_value'
+```
+
   - `D_0`: Distance range of interest (default: 100)
   - `D_safe`:  Safe distance threshold (default: 0)
 
 ### 5. Check the Results
 The processed file will be saved in the data folder (or the specified output path). The new file will include the calculated Q_Veh_ID, TDM (s), InDepth (m), and EI (m/s) columns.
-
-## License
-This project is licensed under the MIT License. Feel free to use and modify the code.
 
 ## Author
 Developed by Hao Cheng. For questions or feedback, feel free to contact me at chengh22@mails.tsinghua.edu.cn.
