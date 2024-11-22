@@ -88,7 +88,7 @@ Step: 2 Clone this git repo in an appropriate folder
 git clone git@github.com:AutoChengh/EmergencyIndex.git
 ```
 
-### 2. Prepare Your Environment
+### 2. Prepare Your CSV Files
 
 Prepare **CSV files** containing vehicle data as described in the Input Data Format section. Save the file in the [data folder](data/), or adjust the script's file path as needed.
 
