@@ -18,7 +18,7 @@ Compared to previous indicators, we have considered a new dimension. EI utilizes
 <p align="center"><em>Figure 2: The framework of EI</em></p>
 
 ## News
-- 🚀 **(2025/5)** Our new work [**MEI**](https://github.com/AutoChengh/MEI)(Modified Emergency Index) is now open!
+- 🚀 **(2025/5)** Our new work [**MEI**] (https://github.com/AutoChengh/MEI)(Modified Emergency Index) is now open!
 
 ## Features
 - **Identify Conflicting Vehicles**: For each vehicle and timestamp, the tool identifies nearby vehicles with potential conflicts.
